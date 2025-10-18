@@ -16,6 +16,14 @@ const menuItems = [
     darkColor: "#1E90FF",
   },
   {
+    title: "Voice Recorder",
+    description: "Record and play back audio",
+    icon: "mic.fill" as const,
+    route: "/voice-recorder",
+    color: "#FF3B30",
+    darkColor: "#FF453A",
+  },
+  {
     title: "Instructions",
     description: "Learn how to play",
     icon: "info.circle.fill" as const,
