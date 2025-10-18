@@ -1,9 +1,9 @@
 
-import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useRouter, Stack } from "expo-router";
+import { View, Text, StyleSheet, ScrollView, Pressable, useColorScheme } from "react-native";
+import { useThemeColors } from "@/styles/commonStyles";
 import { IconSymbol } from "@/components/IconSymbol";
-import { colors, commonStyles } from "@/styles/commonStyles";
+import React, { useState, useEffect } from "react";
+import { useRouter, Stack } from "expo-router";
 
 interface ScoreEntry {
   id: string;
@@ -14,316 +14,266 @@ interface ScoreEntry {
 
 export default function HighScoresScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
+  const colorScheme = useColorScheme();
   const [scores, setScores] = useState<ScoreEntry[]>([]);
 
   useEffect(() => {
-    // In a real app, you would load scores from AsyncStorage or a database
-    // For now, we'll show placeholder data
-    const placeholderScores: ScoreEntry[] = [
-      {
-        id: '1',
-        score: 0,
-        wordsCompleted: 0,
-        date: new Date().toLocaleDateString(),
-      }
-    ];
-    setScores(placeholderScores);
-    console.log("High scores loaded");
+    const savedScores = JSON.parse(localStorage.getItem('wordScrambleScores') || '[]');
+    setScores(savedScores);
   }, []);
 
   const getBadgeColor = (index: number) => {
-    switch (index) {
-      case 0:
-        return colors.accent; // Gold
-      case 1:
-        return colors.textSecondary; // Silver
-      case 2:
-        return '#CD7F32'; // Bronze
-      default:
-        return colors.primary;
+    if (colorScheme === 'dark') {
+      switch (index) {
+        case 0: return '#FFD700';
+        case 1: return '#C0C0C0';
+        case 2: return '#CD7F32';
+        default: return colors.primary;
+      }
+    } else {
+      switch (index) {
+        case 0: return '#FFD700';
+        case 1: return '#C0C0C0';
+        case 2: return '#CD7F32';
+        default: return colors.primary;
+      }
     }
   };
 
   const getBadgeIcon = (index: number) => {
     switch (index) {
-      case 0:
-        return 'trophy.fill';
-      case 1:
-        return 'medal.fill';
-      case 2:
-        return 'medal.fill';
-      default:
-        return 'star.fill';
+      case 0: return 'trophy.fill';
+      case 1: return 'medal.fill';
+      case 2: return 'medal.fill';
+      default: return 'star.fill';
     }
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollContent: {
+      padding: 20,
+      paddingBottom: 40,
+    },
+    header: {
+      marginTop: 20,
+      marginBottom: 32,
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: 36,
+      fontWeight: '900',
+      color: colors.text,
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    subtitle: {
+      fontSize: 18,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      fontWeight: '500',
+    },
+    scoreCard: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      padding: 20,
+      marginBottom: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
+      boxShadow: `0px 4px 12px ${colors.shadow}`,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    rankBadge: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 16,
+    },
+    rankText: {
+      fontSize: 20,
+      fontWeight: '900',
+      color: '#FFFFFF',
+    },
+    scoreContent: {
+      flex: 1,
+    },
+    scoreValue: {
+      fontSize: 24,
+      fontWeight: '800',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    scoreDetails: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    scoreDate: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      marginTop: 4,
+    },
+    emptyState: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      padding: 40,
+      alignItems: 'center',
+      boxShadow: `0px 4px 12px ${colors.shadow}`,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    emptyText: {
+      fontSize: 18,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      marginTop: 16,
+      fontWeight: '500',
+    },
+    statsCard: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      padding: 24,
+      marginBottom: 24,
+      boxShadow: `0px 4px 12px ${colors.shadow}`,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    statsTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 16,
+      textAlign: 'center',
+    },
+    statsRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+    },
+    statBox: {
+      alignItems: 'center',
+      backgroundColor: colors.highlight,
+      padding: 16,
+      borderRadius: 16,
+      minWidth: 100,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    statLabel: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      marginBottom: 4,
+      fontWeight: '600',
+    },
+    statValue: {
+      fontSize: 24,
+      fontWeight: '800',
+      color: colors.text,
+    },
+    backButton: {
+      position: 'absolute',
+      top: 60,
+      left: 20,
+      zIndex: 10,
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      padding: 12,
+      boxShadow: `0px 2px 8px ${colors.shadow}`,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+  });
+
+  const totalGames = scores.length;
+  const totalWords = scores.reduce((sum, score) => sum + score.wordsCompleted, 0);
+  const averageScore = totalGames > 0 ? Math.round(scores.reduce((sum, score) => sum + score.score, 0) / totalGames) : 0;
+
   return (
-    <>
+    <View style={styles.container}>
       <Stack.Screen
         options={{
           title: "High Scores",
-          headerBackTitle: "Back",
-          headerTintColor: colors.primary,
+          headerShown: false,
         }}
       />
-      <View style={commonStyles.container}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <IconSymbol name="trophy.fill" size={64} color={colors.accent} />
-            <Text style={styles.headerTitle}>High Scores</Text>
-            <Text style={styles.headerSubtitle}>
-              Your best performances
-            </Text>
-          </View>
+      
+      <Pressable
+        style={styles.backButton}
+        onPress={() => router.back()}
+      >
+        <IconSymbol name="chevron.left" size={24} color={colors.text} />
+      </Pressable>
 
-          {scores.length === 0 || scores[0].score === 0 ? (
-            <View style={styles.emptyState}>
-              <IconSymbol name="gamecontroller" size={80} color={colors.textSecondary} />
-              <Text style={styles.emptyTitle}>No Scores Yet</Text>
-              <Text style={styles.emptyText}>
-                Play your first game to see your scores here!
-              </Text>
-              <Pressable
-                style={({ pressed }) => [
-                  styles.playButton,
-                  pressed && styles.buttonPressed
-                ]}
-                onPress={() => router.push("/game")}
-              >
-                <Text style={styles.playButtonText}>Play Now</Text>
-              </Pressable>
-            </View>
-          ) : (
-            <View style={styles.scoresContainer}>
-              {scores.map((entry, index) => (
-                <View key={entry.id} style={styles.scoreCard}>
-                  <View style={[styles.rankBadge, { backgroundColor: getBadgeColor(index) }]}>
-                    <IconSymbol 
-                      name={getBadgeIcon(index) as any} 
-                      size={24} 
-                      color={colors.card} 
-                    />
-                    <Text style={styles.rankNumber}>#{index + 1}</Text>
-                  </View>
-                  <View style={styles.scoreContent}>
-                    <View style={styles.scoreRow}>
-                      <Text style={styles.scoreLabel}>Score</Text>
-                      <Text style={styles.scoreValue}>{entry.score}</Text>
-                    </View>
-                    <View style={styles.scoreRow}>
-                      <Text style={styles.scoreLabel}>Words</Text>
-                      <Text style={styles.scoreSecondary}>{entry.wordsCompleted}</Text>
-                    </View>
-                    <View style={styles.scoreRow}>
-                      <Text style={styles.scoreLabel}>Date</Text>
-                      <Text style={styles.scoreSecondary}>{entry.date}</Text>
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </View>
-          )}
+      <ScrollView 
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>🏆 High Scores</Text>
+          <Text style={styles.subtitle}>Your best performances</Text>
+        </View>
 
+        {totalGames > 0 && (
           <View style={styles.statsCard}>
             <Text style={styles.statsTitle}>Overall Statistics</Text>
-            <View style={styles.statsGrid}>
+            <View style={styles.statsRow}>
               <View style={styles.statBox}>
-                <Text style={styles.statValue}>0</Text>
-                <Text style={styles.statLabel}>Total Games</Text>
+                <Text style={styles.statLabel}>Games</Text>
+                <Text style={styles.statValue}>{totalGames}</Text>
               </View>
               <View style={styles.statBox}>
-                <Text style={styles.statValue}>0</Text>
-                <Text style={styles.statLabel}>Total Words</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>0</Text>
-                <Text style={styles.statLabel}>Best Streak</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statValue}>0</Text>
                 <Text style={styles.statLabel}>Avg Score</Text>
+                <Text style={styles.statValue}>{averageScore}</Text>
+              </View>
+              <View style={styles.statBox}>
+                <Text style={styles.statLabel}>Total Words</Text>
+                <Text style={styles.statValue}>{totalWords}</Text>
               </View>
             </View>
           </View>
+        )}
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.backButton,
-              pressed && styles.buttonPressed
-            ]}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.backButtonText}>Back to Menu</Text>
-          </Pressable>
-        </ScrollView>
-      </View>
-    </>
+        {scores.length === 0 ? (
+          <View style={styles.emptyState}>
+            <IconSymbol name="trophy" size={64} color={colors.textSecondary} />
+            <Text style={styles.emptyText}>
+              No scores yet!{'\n'}Play a game to see your scores here.
+            </Text>
+          </View>
+        ) : (
+          scores.map((score, index) => (
+            <View key={score.id} style={styles.scoreCard}>
+              <View style={[styles.rankBadge, { backgroundColor: getBadgeColor(index) }]}>
+                <IconSymbol 
+                  name={getBadgeIcon(index) as any} 
+                  size={24} 
+                  color="#FFFFFF" 
+                />
+              </View>
+              <View style={styles.scoreContent}>
+                <Text style={styles.scoreValue}>{score.score} pts</Text>
+                <Text style={styles.scoreDetails}>
+                  {score.wordsCompleted} words completed
+                </Text>
+                <Text style={styles.scoreDate}>
+                  {new Date(score.date).toLocaleDateString()} at {new Date(score.date).toLocaleTimeString()}
+                </Text>
+              </View>
+            </View>
+          ))
+        )}
+      </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: colors.text,
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 60,
-  },
-  emptyTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.text,
-    marginTop: 24,
-    marginBottom: 12,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    marginBottom: 32,
-    paddingHorizontal: 40,
-  },
-  playButton: {
-    backgroundColor: colors.primary,
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    borderRadius: 12,
-    boxShadow: '0px 4px 12px rgba(0, 123, 255, 0.3)',
-    elevation: 4,
-  },
-  playButtonText: {
-    color: colors.card,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  scoresContainer: {
-    marginBottom: 24,
-  },
-  scoreCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
-  },
-  rankBadge: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  rankNumber: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.card,
-    marginTop: 4,
-  },
-  scoreContent: {
-    flex: 1,
-  },
-  scoreRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 6,
-  },
-  scoreLabel: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    fontWeight: '600',
-  },
-  scoreValue: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: colors.primary,
-  },
-  scoreSecondary: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  statsCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
-  },
-  statsTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  statBox: {
-    width: '48%',
-    backgroundColor: colors.highlight,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: colors.primary,
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    fontWeight: '600',
-  },
-  backButton: {
-    backgroundColor: colors.secondary,
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    borderRadius: 12,
-    boxShadow: '0px 4px 12px rgba(108, 117, 125, 0.3)',
-    elevation: 4,
-  },
-  backButtonText: {
-    color: colors.card,
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  buttonPressed: {
-    opacity: 0.7,
-    transform: [{ scale: 0.98 }],
-  },
-});

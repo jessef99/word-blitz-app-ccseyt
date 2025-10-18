@@ -1,254 +1,265 @@
 
-import React from "react";
-import { View, Text, StyleSheet, ScrollView, Pressable } from "react-native";
-import { useRouter, Stack } from "expo-router";
+import { View, Text, StyleSheet, ScrollView, Pressable, useColorScheme } from "react-native";
+import { useThemeColors } from "@/styles/commonStyles";
 import { IconSymbol } from "@/components/IconSymbol";
-import { colors, commonStyles } from "@/styles/commonStyles";
+import React from "react";
+import { useRouter, Stack } from "expo-router";
 
 export default function InstructionsScreen() {
   const router = useRouter();
+  const colors = useThemeColors();
+  const colorScheme = useColorScheme();
 
-  const instructions = [
-    {
-      icon: "gamecontroller.fill",
-      title: "Game Objective",
-      description: "Unscramble as many words as possible within the time limit to achieve the highest score.",
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
     },
-    {
-      icon: "clock.fill",
-      title: "Time Challenge",
-      description: "You have 60 seconds to solve as many word puzzles as you can. The faster you solve, the more bonus points you earn!",
+    scrollContent: {
+      padding: 20,
+      paddingBottom: 40,
     },
-    {
-      icon: "star.fill",
-      title: "Scoring System",
-      description: "Each correct word gives you 100 points. You also get 10 bonus points for every second remaining when you solve the word.",
+    header: {
+      marginTop: 20,
+      marginBottom: 32,
+      alignItems: 'center',
     },
-    {
-      icon: "lightbulb.fill",
-      title: "Use Hints",
-      description: "Stuck on a word? Tap the Hint button to reveal the first letter. Use hints wisely to keep your momentum!",
+    title: {
+      fontSize: 36,
+      fontWeight: '900',
+      color: colors.text,
+      marginBottom: 8,
+      textAlign: 'center',
     },
-    {
-      icon: "forward.fill",
-      title: "Skip Words",
-      description: "If a word is too difficult, you can skip it and move to the next one. No penalties for skipping!",
+    subtitle: {
+      fontSize: 18,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      fontWeight: '500',
     },
-    {
-      icon: "trophy.fill",
-      title: "Beat Your Score",
-      description: "Try to beat your previous high score and challenge yourself to solve more words each time!",
+    card: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      padding: 24,
+      marginBottom: 16,
+      boxShadow: `0px 4px 12px ${colors.shadow}`,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
-  ];
+    sectionTitle: {
+      fontSize: 22,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 16,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    instructionItem: {
+      flexDirection: 'row',
+      marginBottom: 16,
+      alignItems: 'flex-start',
+    },
+    bullet: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.primary + '20',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 12,
+    },
+    bulletText: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: colors.primary,
+    },
+    instructionText: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.text,
+      lineHeight: 24,
+      paddingTop: 4,
+    },
+    tipBox: {
+      backgroundColor: colors.highlight,
+      borderRadius: 16,
+      padding: 20,
+      marginTop: 8,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    tipTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.primary,
+      marginBottom: 8,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    tipText: {
+      fontSize: 15,
+      color: colors.text,
+      lineHeight: 22,
+    },
+    backButton: {
+      position: 'absolute',
+      top: 60,
+      left: 20,
+      zIndex: 10,
+      backgroundColor: colors.card,
+      borderRadius: 12,
+      padding: 12,
+      boxShadow: `0px 2px 8px ${colors.shadow}`,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    iconContainer: {
+      marginRight: 8,
+    },
+  });
 
   return (
-    <>
+    <View style={styles.container}>
       <Stack.Screen
         options={{
-          title: "How to Play",
-          headerBackTitle: "Back",
-          headerTintColor: colors.primary,
+          title: "Instructions",
+          headerShown: false,
         }}
       />
-      <View style={commonStyles.container}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <IconSymbol name="info.circle.fill" size={64} color={colors.primary} />
-            <Text style={styles.headerTitle}>How to Play</Text>
-            <Text style={styles.headerSubtitle}>
-              Master the word challenge with these simple instructions
+      
+      <Pressable
+        style={styles.backButton}
+        onPress={() => router.back()}
+      >
+        <IconSymbol name="chevron.left" size={24} color={colors.text} />
+      </Pressable>
+
+      <ScrollView 
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>📖 How to Play</Text>
+          <Text style={styles.subtitle}>Master the word scramble game</Text>
+        </View>
+
+        <View style={styles.card}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+            <IconSymbol name="gamecontroller.fill" size={28} color={colors.primary} style={styles.iconContainer} />
+            <Text style={styles.sectionTitle}>Game Rules</Text>
+          </View>
+          
+          <View style={styles.instructionItem}>
+            <View style={styles.bullet}>
+              <Text style={styles.bulletText}>1</Text>
+            </View>
+            <Text style={styles.instructionText}>
+              You have 60 seconds to unscramble as many words as possible
             </Text>
           </View>
 
-          <View style={styles.instructionsContainer}>
-            {instructions.map((item, index) => (
-              <View key={index} style={styles.instructionCard}>
-                <View style={styles.instructionIconContainer}>
-                  <IconSymbol name={item.icon as any} size={32} color={colors.primary} />
-                </View>
-                <View style={styles.instructionContent}>
-                  <Text style={styles.instructionTitle}>{item.title}</Text>
-                  <Text style={styles.instructionDescription}>{item.description}</Text>
-                </View>
-              </View>
-            ))}
+          <View style={styles.instructionItem}>
+            <View style={styles.bullet}>
+              <Text style={styles.bulletText}>2</Text>
+            </View>
+            <Text style={styles.instructionText}>
+              Each word is scrambled - rearrange the letters to form the correct word
+            </Text>
           </View>
 
-          <View style={styles.tipsCard}>
-            <Text style={styles.tipsTitle}>Pro Tips</Text>
-            <View style={styles.tipItem}>
-              <Text style={styles.tipBullet}>•</Text>
-              <Text style={styles.tipText}>
-                Look for common letter patterns and word endings
-              </Text>
+          <View style={styles.instructionItem}>
+            <View style={styles.bullet}>
+              <Text style={styles.bulletText}>3</Text>
             </View>
-            <View style={styles.tipItem}>
-              <Text style={styles.tipBullet}>•</Text>
-              <Text style={styles.tipText}>
-                Start with vowels to identify possible word structures
-              </Text>
-            </View>
-            <View style={styles.tipItem}>
-              <Text style={styles.tipBullet}>•</Text>
-              <Text style={styles.tipText}>
-                Don&apos;t spend too much time on one word - skip and come back later
-              </Text>
-            </View>
-            <View style={styles.tipItem}>
-              <Text style={styles.tipBullet}>•</Text>
-              <Text style={styles.tipText}>
-                Practice regularly to improve your word recognition speed
-              </Text>
-            </View>
+            <Text style={styles.instructionText}>
+              Type your answer and press Submit to check if it&apos;s correct
+            </Text>
           </View>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.startButton,
-              pressed && styles.buttonPressed
-            ]}
-            onPress={() => router.push("/game")}
-          >
-            <Text style={styles.startButtonText}>Start Playing</Text>
-          </Pressable>
+          <View style={styles.instructionItem}>
+            <View style={styles.bullet}>
+              <Text style={styles.bulletText}>4</Text>
+            </View>
+            <Text style={styles.instructionText}>
+              Use hints if you&apos;re stuck, or skip to the next word
+            </Text>
+          </View>
+        </View>
 
-          <Pressable
-            style={({ pressed }) => [
-              styles.backButton,
-              pressed && styles.buttonPressed
-            ]}
-            onPress={() => router.back()}
-          >
-            <Text style={styles.backButtonText}>Back to Menu</Text>
-          </Pressable>
-        </ScrollView>
-      </View>
-    </>
+        <View style={styles.card}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+            <IconSymbol name="star.fill" size={28} color={colors.warning} style={styles.iconContainer} />
+            <Text style={styles.sectionTitle}>Scoring</Text>
+          </View>
+          
+          <View style={styles.instructionItem}>
+            <View style={styles.bullet}>
+              <Text style={styles.bulletText}>💯</Text>
+            </View>
+            <Text style={styles.instructionText}>
+              Earn 100 points for each correct word
+            </Text>
+          </View>
+
+          <View style={styles.instructionItem}>
+            <View style={styles.bullet}>
+              <Text style={styles.bulletText}>⚡</Text>
+            </View>
+            <Text style={styles.instructionText}>
+              Get bonus points based on remaining time (5 points per second)
+            </Text>
+          </View>
+
+          <View style={styles.instructionItem}>
+            <View style={styles.bullet}>
+              <Text style={styles.bulletText}>🏆</Text>
+            </View>
+            <Text style={styles.instructionText}>
+              Your high scores are saved automatically
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.card}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+            <IconSymbol name="lightbulb.fill" size={28} color={colors.success} style={styles.iconContainer} />
+            <Text style={styles.sectionTitle}>Tips & Tricks</Text>
+          </View>
+
+          <View style={styles.tipBox}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <IconSymbol name="brain.head.profile" size={20} color={colors.primary} style={styles.iconContainer} />
+              <Text style={styles.tipTitle}>Look for patterns</Text>
+            </View>
+            <Text style={styles.tipText}>
+              Common letter combinations like &quot;TH&quot;, &quot;ING&quot;, or &quot;ED&quot; can help you solve words faster
+            </Text>
+          </View>
+
+          <View style={[styles.tipBox, { marginTop: 12 }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <IconSymbol name="clock.fill" size={20} color={colors.primary} style={styles.iconContainer} />
+              <Text style={styles.tipTitle}>Speed matters</Text>
+            </View>
+            <Text style={styles.tipText}>
+              Solve words quickly to earn time bonus points. The faster you solve, the higher your score!
+            </Text>
+          </View>
+
+          <View style={[styles.tipBox, { marginTop: 12 }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <IconSymbol name="hand.raised.fill" size={20} color={colors.primary} style={styles.iconContainer} />
+              <Text style={styles.tipTitle}>Use hints wisely</Text>
+            </View>
+            <Text style={styles.tipText}>
+              Hints reveal the first letter. Use them when you&apos;re really stuck, but try to solve without them for practice!
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: '800',
-    color: colors.text,
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: 'center',
-    paddingHorizontal: 20,
-  },
-  instructionsContainer: {
-    marginBottom: 24,
-  },
-  instructionCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 12,
-    flexDirection: 'row',
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
-  },
-  instructionIconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: colors.highlight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  instructionContent: {
-    flex: 1,
-  },
-  instructionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 6,
-  },
-  instructionDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-    lineHeight: 20,
-  },
-  tipsCard: {
-    backgroundColor: colors.accent,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
-    boxShadow: '0px 2px 8px rgba(255, 193, 7, 0.2)',
-    elevation: 2,
-  },
-  tipsTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 16,
-  },
-  tipItem: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    alignItems: 'flex-start',
-  },
-  tipBullet: {
-    fontSize: 18,
-    color: colors.text,
-    marginRight: 12,
-    fontWeight: '700',
-  },
-  tipText: {
-    flex: 1,
-    fontSize: 14,
-    color: colors.text,
-    lineHeight: 20,
-  },
-  startButton: {
-    backgroundColor: colors.primary,
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    borderRadius: 12,
-    marginBottom: 12,
-    boxShadow: '0px 4px 12px rgba(0, 123, 255, 0.3)',
-    elevation: 4,
-  },
-  startButtonText: {
-    color: colors.card,
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  backButton: {
-    backgroundColor: colors.secondary,
-    paddingVertical: 16,
-    paddingHorizontal: 48,
-    borderRadius: 12,
-    boxShadow: '0px 4px 12px rgba(108, 117, 125, 0.3)',
-    elevation: 4,
-  },
-  backButtonText: {
-    color: colors.card,
-    fontSize: 18,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  buttonPressed: {
-    opacity: 0.7,
-    transform: [{ scale: 0.98 }],
-  },
-});

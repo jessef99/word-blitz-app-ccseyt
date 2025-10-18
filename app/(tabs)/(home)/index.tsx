@@ -1,210 +1,158 @@
 
-import React from "react";
 import { Stack, Link, useRouter } from "expo-router";
-import { ScrollView, Pressable, StyleSheet, View, Text, Platform } from "react-native";
-import { IconSymbol } from "@/components/IconSymbol";
 import { useTheme } from "@react-navigation/native";
-import { colors, commonStyles } from "@/styles/commonStyles";
+import { useThemeColors } from "@/styles/commonStyles";
+import { IconSymbol } from "@/components/IconSymbol";
+import React from "react";
+import { ScrollView, Pressable, StyleSheet, View, Text, Platform, useColorScheme } from "react-native";
+
+const menuItems = [
+  {
+    title: "Play Game",
+    description: "Start a new word scramble challenge",
+    icon: "gamecontroller.fill" as const,
+    route: "/game",
+    color: "#007BFF",
+    darkColor: "#1E90FF",
+  },
+  {
+    title: "Instructions",
+    description: "Learn how to play",
+    icon: "info.circle.fill" as const,
+    route: "/instructions",
+    color: "#28A745",
+    darkColor: "#32D74B",
+  },
+  {
+    title: "High Scores",
+    description: "View your best scores",
+    icon: "trophy.fill" as const,
+    route: "/highscores",
+    color: "#FFC107",
+    darkColor: "#FFD60A",
+  },
+];
 
 export default function HomeScreen() {
   const theme = useTheme();
   const router = useRouter();
+  const colors = useThemeColors();
+  const colorScheme = useColorScheme();
 
-  const menuItems = [
-    {
-      title: "New Game",
-      description: "Start a new word challenge",
-      route: "/game",
-      icon: "play.fill",
-      color: colors.primary,
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
     },
-    {
-      title: "Instructions",
-      description: "Learn how to play",
-      route: "/instructions",
-      icon: "info.circle.fill",
-      color: colors.secondary,
+    scrollContent: {
+      padding: 20,
+      paddingBottom: 100,
     },
-    {
-      title: "High Scores",
-      description: "View your best scores",
-      route: "/highscores",
-      icon: "trophy.fill",
-      color: colors.accent,
-    }
-  ];
+    header: {
+      marginTop: 20,
+      marginBottom: 32,
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: 42,
+      fontWeight: '900',
+      color: colors.text,
+      marginBottom: 8,
+      textAlign: 'center',
+    },
+    subtitle: {
+      fontSize: 18,
+      color: colors.textSecondary,
+      textAlign: 'center',
+      fontWeight: '500',
+    },
+    menuItem: {
+      backgroundColor: colors.card,
+      borderRadius: 20,
+      padding: 24,
+      marginBottom: 16,
+      flexDirection: 'row',
+      alignItems: 'center',
+      boxShadow: `0px 4px 12px ${colors.shadow}`,
+      elevation: 4,
+      borderWidth: 1,
+      borderColor: colors.border,
+    },
+    menuItemPressed: {
+      opacity: 0.7,
+      transform: [{ scale: 0.98 }],
+    },
+    iconContainer: {
+      width: 60,
+      height: 60,
+      borderRadius: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginRight: 16,
+    },
+    menuContent: {
+      flex: 1,
+    },
+    menuTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    menuDescription: {
+      fontSize: 14,
+      color: colors.textSecondary,
+      fontWeight: '400',
+    },
+    chevron: {
+      marginLeft: 8,
+    },
+  });
 
-  const renderMenuItem = (item: typeof menuItems[0]) => (
-    <Pressable
-      key={item.route}
-      onPress={() => router.push(item.route as any)}
-      style={({ pressed }) => [
-        styles.menuCard,
-        pressed && styles.menuCardPressed
-      ]}
-    >
-      <View style={[styles.menuIcon, { backgroundColor: item.color }]}>
-        <IconSymbol name={item.icon as any} color={colors.card} size={32} />
-      </View>
-      <View style={styles.menuContent}>
-        <Text style={styles.menuTitle}>{item.title}</Text>
-        <Text style={styles.menuDescription}>{item.description}</Text>
-      </View>
-      <IconSymbol name="chevron.right" color={colors.textSecondary} size={20} />
-    </Pressable>
-  );
+  const renderMenuItem = (item: typeof menuItems[0]) => {
+    const itemColor = colorScheme === 'dark' ? item.darkColor : item.color;
+    
+    return (
+      <Pressable
+        key={item.route}
+        style={({ pressed }) => [
+          styles.menuItem,
+          pressed && styles.menuItemPressed,
+        ]}
+        onPress={() => router.push(item.route as any)}
+      >
+        <View style={[styles.iconContainer, { backgroundColor: itemColor + '20' }]}>
+          <IconSymbol name={item.icon} size={32} color={itemColor} />
+        </View>
+        <View style={styles.menuContent}>
+          <Text style={styles.menuTitle}>{item.title}</Text>
+          <Text style={styles.menuDescription}>{item.description}</Text>
+        </View>
+        <IconSymbol name="chevron.right" size={20} color={colors.textSecondary} style={styles.chevron} />
+      </Pressable>
+    );
+  };
 
   return (
-    <>
-      {Platform.OS === 'ios' && (
-        <Stack.Screen
-          options={{
-            title: "Word Challenge",
-            headerLargeTitle: true,
-          }}
-        />
-      )}
-      <View style={[commonStyles.container]}>
-        <ScrollView
-          contentContainerStyle={[
-            styles.scrollContent,
-            Platform.OS !== 'ios' && styles.scrollContentWithTabBar
-          ]}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Word Challenge</Text>
-            <Text style={styles.headerSubtitle}>Test your vocabulary against the clock!</Text>
-          </View>
+    <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: "Word Scramble",
+          headerShown: false,
+        }}
+      />
+      <ScrollView 
+        style={styles.container}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>🎮 Word Scramble</Text>
+          <Text style={styles.subtitle}>Challenge your word skills!</Text>
+        </View>
 
-          <View style={styles.menuContainer}>
-            {menuItems.map(renderMenuItem)}
-          </View>
-
-          <View style={styles.statsCard}>
-            <Text style={styles.statsTitle}>Quick Stats</Text>
-            <View style={styles.statsRow}>
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>0</Text>
-                <Text style={styles.statLabel}>Games Played</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>0</Text>
-                <Text style={styles.statLabel}>Best Score</Text>
-              </View>
-              <View style={styles.statDivider} />
-              <View style={styles.statItem}>
-                <Text style={styles.statValue}>0</Text>
-                <Text style={styles.statLabel}>Words Solved</Text>
-              </View>
-            </View>
-          </View>
-        </ScrollView>
-      </View>
-    </>
+        {menuItems.map(renderMenuItem)}
+      </ScrollView>
+    </View>
   );
 }
-
-const styles = StyleSheet.create({
-  scrollContent: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  scrollContentWithTabBar: {
-    paddingBottom: 120,
-  },
-  header: {
-    marginBottom: 32,
-    alignItems: 'center',
-  },
-  headerTitle: {
-    fontSize: 36,
-    fontWeight: '800',
-    color: colors.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  menuContainer: {
-    marginBottom: 24,
-  },
-  menuCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
-  },
-  menuCardPressed: {
-    opacity: 0.7,
-    transform: [{ scale: 0.98 }],
-  },
-  menuIcon: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  menuContent: {
-    flex: 1,
-  },
-  menuTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 4,
-  },
-  menuDescription: {
-    fontSize: 14,
-    color: colors.textSecondary,
-  },
-  statsCard: {
-    backgroundColor: colors.card,
-    borderRadius: 16,
-    padding: 20,
-    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.08)',
-    elevation: 2,
-  },
-  statsTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.text,
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: colors.primary,
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: colors.textSecondary,
-    textAlign: 'center',
-  },
-  statDivider: {
-    width: 1,
-    height: 40,
-    backgroundColor: colors.highlight,
-  },
-});
